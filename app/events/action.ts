@@ -2,6 +2,7 @@
 
 import { Event } from "@/types/custom";
 import { createClient } from "@/utils/supabase/server";
+import { revalidatePath } from "next/cache";
 
 /**
  * Adds a new event to the database.
@@ -39,6 +40,9 @@ export async function createEvent(
     console.error("Error creating event:", error.message);
     throw new Error("Failed to create event.");
   }
+
+  // Revalidate Path to update the UI
+  revalidatePath("/");
   // return a message indicating that the forms were submitted.
   return { message: "Form submitted!" };
 }
@@ -66,7 +70,8 @@ export async function deleteEvent(id: string) {
       console.error("Error deleting event:", error.message);
       return { message: "Failed to delete event. Please try again." };
     }
-
+    // Revalidate Path to update the UI
+    revalidatePath("/");
     // Return a success message.
     return { message: "Event deleted successfully!" };
   } catch (error) {
@@ -108,6 +113,8 @@ export async function updateEvent(event: Event) {
       return { message: "Failed to update event. Please try again." };
     }
 
+    // Revalidate Path to update the UI
+    revalidatePath("/");
     // Return a success message.
     return { message: "Event updated successfully!" };
   } catch (error) {
