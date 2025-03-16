@@ -5,6 +5,8 @@ import { createClient } from "@/utils/supabase/client"; // Import the Supabase c
 import { deleteEvent } from "@/app/events/action"; // Import the deleteEvent server action.
 import { Event } from "@/types/custom";
 
+import NavBar from "@/components/nav-bar"
+
 export default function Home() {
   const [events, setEvents] = useState<Event[]>([]); // State to store events.
   const supabase = createClient(); // Initialize the Supabase client (client-side).
@@ -37,14 +39,15 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="bg-white shadow-sm">
-        <div className="container mx-auto flex items-center justify-between px-4 py-4">
-          <h1 className="text-2xl font-bold text-gray-800">Gopher Run</h1>
-          <button className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700">
-            Sign In
-          </button>
-        </div>
-      </header>
+      {/* <header className="bg-white shadow-sm"> */}
+      {/*   <div className="container mx-auto flex items-center justify-between px-4 py-4"> */}
+      {/*     <h1 className="text-2xl font-bold text-gray-800">Gopher Run</h1> */}
+      {/*     <button className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"> */}
+      {/*       Sign In */}
+      {/*     </button> */}
+      {/*   </div> */}
+      {/* </header> */}
+      <NavBar />
 
       {/* Hero Section */}
       <section className="bg-gradient-to-r from-blue-500 to-blue-600 py-20 text-center text-white">
