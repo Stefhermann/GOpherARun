@@ -103,11 +103,12 @@ export default function Home() {
         </section>
 
         {/* Event Feed Section */}
-        <section className="container mx-auto px-4">
-          <h3 className="mb-4 text-3xl font-bold text-[#FFCC33] text-center">Upcoming Events</h3>
+        <section className="container max-h-[75%] mx-auto px-4">
 
           {/* Scrollable Vertical Event List */}
-          <ScrollArea className="h-96 w-full rounded-lg p-2 bg-[#5c0013]">
+          <ScrollArea className="h-full w-full rounded-lg p-2 bg-[#5c0013]">
+
+            <h3 className="mb-4 text-3xl font-bold text-[#FFCC33] text-center">Upcoming Events</h3>
             <div className="space-y-4">
               {events.map((event) => (
                 <EventCard key={event.id} event={event} onDelete={handleDelete} />

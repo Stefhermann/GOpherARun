@@ -56,7 +56,7 @@ export default function EventCard({ event, onDelete }: EventCardProps) {
       {/* Delete Button (Opens Confirmation Popup) */}
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-          <button className="absolute top-0 right-1 text-gray-200 hover:text-[#FFCC33]">
+          <button className="absolute top-0 right-1 text-black hover:text-[#FFCC33]">
             ✖
           </button>
         </DialogTrigger>
