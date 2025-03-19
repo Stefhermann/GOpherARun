@@ -1,3 +1,5 @@
+A community running application
+
 ## Getting Started
 
 First, run the development server:
