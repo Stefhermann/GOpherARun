@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { createClient } from "@/utils/supabase/client";
-import { deleteEvent } from "@/app/events/action";
+import { deleteEvent } from "@/app/events/actions";
 import { Event } from "@/types/custom";
 import NavBar from "@/components/Navigation/nav-bar";
 import EventCard from "@/components/Events/event-card";
@@ -40,14 +40,15 @@ export default function Home() {
 
   return (
     <div className="min-h-screen flex flex-col">
-
       <NavBar />
 
       {/* Hero Section */}
       <section className="relative py-20 h-96 text-center text-[#7A0019] shadow-md">
         <div className="absolute inset-0 -z-10 bg-[url('/GopherRunBackground.webp')] bg-cover bg-no-repeat opacity-30"></div>
         <div className="relative z-10 container mx-auto px-4">
-          <h2 className="text-4xl font-bold md:text-5xl">Find Your Running Buddy</h2>
+          <h2 className="text-4xl font-bold md:text-5xl">
+            Find Your Running Buddy
+          </h2>
           <p className="mt-4 text-lg md:text-xl">
             Join running events near you and stay motivated with a group.
           </p>
@@ -59,8 +60,6 @@ export default function Home() {
 
       {/* Main Section */}
       <main className="md:grid md:grid-cols-2 md:gap-4 mt-12">
-
-
         {/* Futre Friends List Section? */}
         <section className="container mx-auto px-4 text-black">
           <h3 className="text-3xl font-bold text-[#7A0019] text-center mb-6">
@@ -70,33 +69,47 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* Motivation Block 1 */}
             <div className="bg-white shadow-lg rounded-lg p-6 flex flex-col items-center">
-              <h4 className="text-xl font-semibold text-[#7A0019] mt-4">Stay Motivated</h4>
+              <h4 className="text-xl font-semibold text-[#7A0019] mt-4">
+                Stay Motivated
+              </h4>
               <p className="text-gray-700 text-center mt-2">
-                Running with a group keeps you accountable and makes every run more fun! The energy of a team can push you further than running alone.
+                Running with a group keeps you accountable and makes every run
+                more fun! The energy of a team can push you further than running
+                alone.
               </p>
             </div>
 
             {/* Motivation Block 2 */}
             <div className="bg-white shadow-lg rounded-lg p-6 flex flex-col items-center">
-              <h4 className="text-xl font-semibold text-[#7A0019] mt-4">Make New Friends</h4>
+              <h4 className="text-xl font-semibold text-[#7A0019] mt-4">
+                Make New Friends
+              </h4>
               <p className="text-gray-700 text-center mt-2">
-                Meet like-minded people who share your passion for running. Turn workouts into social events and build lasting friendships!
+                Meet like-minded people who share your passion for running. Turn
+                workouts into social events and build lasting friendships!
               </p>
             </div>
 
             {/* Motivation Block 3 */}
             <div className="bg-white shadow-lg rounded-lg p-6 flex flex-col items-center">
-              <h4 className="text-xl font-semibold text-[#7A0019] mt-4">Improve Your Health</h4>
+              <h4 className="text-xl font-semibold text-[#7A0019] mt-4">
+                Improve Your Health
+              </h4>
               <p className="text-gray-700 text-center mt-2">
-                Regular running boosts heart health, reduces stress, and keeps you fit. Joining an event helps you stay consistent and reach your goals.
+                Regular running boosts heart health, reduces stress, and keeps
+                you fit. Joining an event helps you stay consistent and reach
+                your goals.
               </p>
             </div>
 
             {/* Motivation Block 4 */}
             <div className="bg-white shadow-lg rounded-lg p-6 flex flex-col items-center">
-              <h4 className="text-xl font-semibold text-[#7A0019] mt-4">Have Fun & Celebrate</h4>
+              <h4 className="text-xl font-semibold text-[#7A0019] mt-4">
+                Have Fun & Celebrate
+              </h4>
               <p className="text-gray-700 text-center mt-2">
-                Running isn’t just about fitness; it’s about having fun! Enjoy the journey, set new challenges, and celebrate every milestone.
+                Running isn’t just about fitness; it’s about having fun! Enjoy
+                the journey, set new challenges, and celebrate every milestone.
               </p>
             </div>
           </div>
@@ -104,14 +117,18 @@ export default function Home() {
 
         {/* Event Feed Section */}
         <section className="container max-h-[75%] mx-auto px-4">
-
           {/* Scrollable Vertical Event List */}
           <ScrollArea className="h-full w-full rounded-lg p-2 bg-[#5c0013]">
-
-            <h3 className="mb-4 text-3xl font-bold text-[#FFCC33] text-center">Upcoming Events</h3>
+            <h3 className="mb-4 text-3xl font-bold text-[#FFCC33] text-center">
+              Upcoming Events
+            </h3>
             <div className="space-y-4">
               {events.map((event) => (
-                <EventCard key={event.id} event={event} onDelete={handleDelete} />
+                <EventCard
+                  key={event.id}
+                  event={event}
+                  onDelete={handleDelete}
+                />
               ))}
             </div>
             <ScrollBar orientation="vertical" />
