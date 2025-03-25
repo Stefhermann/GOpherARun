@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
-import { createEvent } from "@/app/events/action";
+import { createEvent } from "@/app/events/actions";
 
 const initialState = { message: "" };
 
@@ -10,12 +10,17 @@ export default function EventForm() {
 
   return (
     <div className="p-8">
-      <h1 className="mb-6 text-2xl text-[#7A0019] font-bold text-gray-800">Create a New Event</h1>
+      <h1 className="mb-6 text-2xl text-[#7A0019] font-bold text-gray-800">
+        Create a New Event
+      </h1>
 
       <form action={formAction} className="space-y-6">
         {/* Title Field */}
         <div>
-          <label htmlFor="title" className="block text-sm font-medium text-gray-700">
+          <label
+            htmlFor="title"
+            className="block text-sm font-medium text-gray-700"
+          >
             Title
           </label>
           <input
@@ -30,7 +35,10 @@ export default function EventForm() {
 
         {/* Location Field */}
         <div>
-          <label htmlFor="location" className="block text-sm font-medium text-gray-700">
+          <label
+            htmlFor="location"
+            className="block text-sm font-medium text-gray-700"
+          >
             Location
           </label>
           <input
@@ -45,7 +53,10 @@ export default function EventForm() {
 
         {/* Time Field */}
         <div>
-          <label htmlFor="time" className="block text-sm font-medium text-gray-700">
+          <label
+            htmlFor="time"
+            className="block text-sm font-medium text-gray-700"
+          >
             Time
           </label>
           <input
@@ -69,7 +80,9 @@ export default function EventForm() {
 
         {/* Success/Error Message */}
         {state.message && (
-          <p className="mt-4 text-center text-sm text-red-600">{state.message}</p>
+          <p className="mt-4 text-center text-sm text-red-600">
+            {state.message}
+          </p>
         )}
       </form>
     </div>

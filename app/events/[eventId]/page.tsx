@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
-import { deleteEvent } from "@/app/events/action";
+import { deleteEvent } from "@/app/events/actions";
 import { Button } from "@/components/ui/button";
 import NavBar from "@/components/Navigation/nav-bar";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
@@ -73,7 +73,8 @@ export default function EventPage() {
     setJoinSuccess(true); // Open success popup
   };
 
-  if (loading) return <div className="text-center mt-10 text-white">Loading event...</div>;
+  if (loading)
+    return <div className="text-center mt-10 text-white">Loading event...</div>;
 
   return (
     <div className="min-h-screen bg-[#7A0019] text-white">
@@ -81,13 +82,14 @@ export default function EventPage() {
 
       <div className="container mx-auto px-6 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 bg-white text-gray-900 p-8 rounded-sm shadow-lg">
-
           {/* Left Column - Split into Event Details & Participants */}
           <div className="flex flex-col h-full">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 flex-grow">
               {/* Left Section - Event Details */}
               <div>
-                <h1 className="text-4xl font-bold text-[#7A0019]">{event.title}</h1>
+                <h1 className="text-4xl font-bold text-[#7A0019]">
+                  {event.title}
+                </h1>
                 <p className="text-lg text-gray-700 mt-2">{event.location}</p>
                 <p className="mt-2 text-sm text-gray-600">
                   {new Date(event.time).toLocaleString()}
@@ -95,7 +97,11 @@ export default function EventPage() {
 
                 <p className="text-lg text-gray-700 mt-4">Run Description: </p>
                 <p className="text-md text-gray-700 mt-2">
-                  We&apos;ll be running through scenic trails, maintaining a steady pace suitable for beginners. This is a great opportunity to meet fellow runners, enjoy the fresh air, and challenge yourself. Arrive 5 minutes early to warm up and so you don’t miss out!
+                  We&apos;ll be running through scenic trails, maintaining a
+                  steady pace suitable for beginners. This is a great
+                  opportunity to meet fellow runners, enjoy the fresh air, and
+                  challenge yourself. Arrive 5 minutes early to warm up and so
+                  you don’t miss out!
                 </p>
               </div>
 
@@ -103,16 +109,25 @@ export default function EventPage() {
               <div>
                 <h3 className="flex mt-2 text-xl font-bold text-[#7A0019] mb-2 justify-between">
                   Participants
-                  <p className="mt-1 text-sm text-black">
-                    8/10 People
-                  </p>
+                  <p className="mt-1 text-sm text-black">8/10 People</p>
                 </h3>
                 <ScrollArea className="h-80 w-full rounded-lg border">
                   <div className="p-3 space-y-3">
                     {mockParticipants.map((participant) => (
-                      <div key={participant.id} className="flex items-center space-x-3 bg-gray-100 p-2 rounded-lg shadow-sm">
-                        <Image src="/UnknownUser.png" alt={participant.name} width={40} height={40} className="rounded-full" />
-                        <p className="text-gray-900 font-medium">{participant.name}</p>
+                      <div
+                        key={participant.id}
+                        className="flex items-center space-x-3 bg-gray-100 p-2 rounded-lg shadow-sm"
+                      >
+                        <Image
+                          src="/UnknownUser.png"
+                          alt={participant.name}
+                          width={40}
+                          height={40}
+                          className="rounded-full"
+                        />
+                        <p className="text-gray-900 font-medium">
+                          {participant.name}
+                        </p>
                       </div>
                     ))}
                   </div>
@@ -125,13 +140,18 @@ export default function EventPage() {
               {/* Join Event Button with Success Popup */}
               <Dialog open={joinSuccess} onOpenChange={setJoinSuccess}>
                 <DialogTrigger asChild>
-                  <Button className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 text-lg" onClick={handleJoin}>
+                  <Button
+                    className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 text-lg"
+                    onClick={handleJoin}
+                  >
                     Join Event
                   </Button>
                 </DialogTrigger>
                 <DialogContent className="bg-white text-gray-900">
                   <DialogTitle>Success</DialogTitle>
-                  <DialogDescription>You have successfully joined the event!</DialogDescription>
+                  <DialogDescription>
+                    You have successfully joined the event!
+                  </DialogDescription>
                   <DialogFooter>
                     <Button onClick={() => setJoinSuccess(false)}>OK</Button>
                   </DialogFooter>
@@ -141,23 +161,34 @@ export default function EventPage() {
               {/* Delete Event Button with Confirmation Popup */}
               <Dialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
                 <DialogTrigger asChild>
-                  <Button className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 text-lg">Delete Event</Button>
+                  <Button className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 text-lg">
+                    Delete Event
+                  </Button>
                 </DialogTrigger>
                 <DialogContent className="bg-white text-gray-900">
                   <DialogTitle>Confirm Deletion</DialogTitle>
                   <DialogDescription>
-                    Are you sure you want to delete <strong>{event.title}</strong>? This action cannot be undone.
+                    Are you sure you want to delete{" "}
+                    <strong>{event.title}</strong>? This action cannot be
+                    undone.
                   </DialogDescription>
                   <DialogFooter>
-                    <Button variant="outline" onClick={() => setIsDeleteOpen(false)}>Cancel</Button>
-                    <Button className="bg-red-600 text-white hover:bg-red-700" onClick={handleDelete}>
+                    <Button
+                      variant="outline"
+                      onClick={() => setIsDeleteOpen(false)}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      className="bg-red-600 text-white hover:bg-red-700"
+                      onClick={handleDelete}
+                    >
                       Delete
                     </Button>
                   </DialogFooter>
                 </DialogContent>
               </Dialog>
             </div>
-
           </div>
 
           {/* Left Column - Event Image */}
