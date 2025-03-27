@@ -1,3 +1,5 @@
+import { UUID } from "crypto";
+
 export type Json =
   | string
   | number
@@ -40,6 +42,7 @@ export type Database = {
           location: string;
           time: string;
           title: string;
+          creator_id: UUID;
         };
         Insert: {
           id?: string;
