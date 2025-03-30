@@ -78,7 +78,10 @@ export async function deleteEvent(id: string) {
 
   try {
     // Delete the event from the database.
-    const { error } = await supabase.from("events").delete().eq("id", id);
+    const { error } = await supabase.from("events").delete().match({
+      creator_id: user.data.user.id,
+      id: id,
+    });
 
     if (error) {
       // If there's an error, return a message.
@@ -125,7 +128,10 @@ export async function updateEvent(event: Event) {
         location: event.location,
         time: new Date(event.time).toISOString(), // Convert to ISO string for Supabase.
       })
-      .eq("id", event.id); // Match the event by ID.
+      .match({
+        creator_id: user.data.user.id,
+        id: event.id,
+      }); // Match the event by ID.
 
     if (error) {
       // If there's an error, return a message.
