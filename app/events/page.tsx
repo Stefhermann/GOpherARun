@@ -1,12 +1,10 @@
 "use client";
 
-import NavBar from "@/components/Navigation/nav-bar";
 import EventForm from "@/components/Events/event-form"; // Import the separated form
 
 export default function EventPage() {
   return (
     <div className="min-h-screen bg-gray-50">
-      <NavBar />
       <div className="mx-auto max-w-6xl px-6 py-12">
         {/* Two-Column Layout */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">

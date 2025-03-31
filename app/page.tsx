@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { deleteEvent } from "@/app/events/actions";
 import { Event } from "@/types/custom";
-import NavBar from "@/components/Navigation/nav-bar";
 import EventCard from "@/components/Events/event-card";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import Link from "next/link";
@@ -40,7 +39,6 @@ export default function Home() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <NavBar />
 
       {/* Hero Section */}
       <section className="relative py-20 h-96 text-center text-[#7A0019] shadow-md">
@@ -52,9 +50,11 @@ export default function Home() {
           <p className="mt-4 text-lg md:text-xl">
             Join running events near you and stay motivated with a group.
           </p>
-          <button className="mt-8 rounded-md bg-[#7A0019] px-6 py-3 text-lg font-semibold text-white hover:bg-[#5c0013]">
-            Get Started
-          </button>
+          <Link href={"/signup"}>
+            <button className="mt-8 rounded-md bg-[#7A0019] px-6 py-3 text-lg font-semibold text-white hover:bg-[#5c0013] cursor-pointer">
+              Get Started
+            </button>
+          </Link>
         </div>
       </section>
 
