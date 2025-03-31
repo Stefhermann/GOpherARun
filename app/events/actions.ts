@@ -3,6 +3,7 @@
 import { Event } from "@/types/custom";
 import { createClient } from "@/utils/supabase/server";
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 
 /**
  * Adds a new event to the database.
@@ -28,11 +29,18 @@ export async function createEvent(
   const location = formData.get("location") as string;
   const time = formData.get("time") as string;
 
+  // Check if the user is logged in
+  const user = await supabase.auth.getUser();
+  if (user.error || !user.data?.user) {
+    redirect("/login");
+  }
+
   // Insert the event into the database.
   const { error } = await supabase.from("events").insert({
     title,
     location,
     time: new Date(time).toISOString(), // Convert to ISO string for Supabase.
+    creator_id: user.data.user.id,
   });
 
   if (error) {
@@ -61,9 +69,19 @@ export async function createEvent(
 export async function deleteEvent(id: string) {
   // Initialize the Supabase client.
   const supabase = await createClient();
+
+  // Check if the user is logged in
+  const user = await supabase.auth.getUser();
+  if (user.error || !user.data?.user) {
+    redirect("/login");
+  }
+
   try {
     // Delete the event from the database.
-    const { error } = await supabase.from("events").delete().eq("id", id);
+    const { error } = await supabase.from("events").delete().match({
+      creator_id: user.data.user.id,
+      id: id,
+    });
 
     if (error) {
       // If there's an error, return a message.
@@ -96,6 +114,11 @@ export async function updateEvent(event: Event) {
   // Initialize the Supabase client.
   const supabase = await createClient();
 
+  // Check if the user is logged in
+  const user = await supabase.auth.getUser();
+  if (user.error || !user.data?.user) {
+    redirect("/login");
+  }
   try {
     // Update the event in the database.
     const { error } = await supabase
@@ -105,7 +128,10 @@ export async function updateEvent(event: Event) {
         location: event.location,
         time: new Date(event.time).toISOString(), // Convert to ISO string for Supabase.
       })
-      .eq("id", event.id); // Match the event by ID.
+      .match({
+        creator_id: user.data.user.id,
+        id: event.id,
+      }); // Match the event by ID.
 
     if (error) {
       // If there's an error, return a message.
