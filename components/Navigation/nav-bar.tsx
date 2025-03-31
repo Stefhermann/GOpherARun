@@ -24,15 +24,9 @@ const NavBar = () => {
         <div className="flex justify-end">
           <Link
             href="/login"
-            className="px-4 py-2 text-[#7A0019] transition"
-          >
-            Login
-          </Link>
-          <Link
-            href="/signup"
             className="px-4 py-2 bg-[#7A0019] text-white transition"
           >
-            Sign Up
+            Login
           </Link>
         </div>
       </nav>

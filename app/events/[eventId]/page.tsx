@@ -5,7 +5,6 @@ import { useParams, useRouter } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
 import { deleteEvent } from "@/app/events/actions";
 import { Button } from "@/components/ui/button";
-import NavBar from "@/components/Navigation/nav-bar";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import {
   Dialog,
@@ -78,7 +77,6 @@ export default function EventPage() {
 
   return (
     <div className="min-h-screen bg-[#7A0019] text-white">
-      <NavBar />
 
       <div className="container mx-auto px-6 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 bg-white text-gray-900 p-8 rounded-sm shadow-lg">
