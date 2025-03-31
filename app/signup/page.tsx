@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { signup } from "./actions";
+import { signup } from "@/app/signup/actions";
 
 const SignUpPage = () => {
   return (
