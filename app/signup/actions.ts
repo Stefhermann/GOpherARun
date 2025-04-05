@@ -48,7 +48,7 @@ export async function signup(formData: FormData): Promise<void> {
    * Create auth user - this automatically triggers the profile creation
    * through the PostgreSQL trigger we set up
    */
-  const { error, data } = await supabase.auth.signUp({
+  const { data, error } = await supabase.auth.signUp({
     email,
     password,
     options: {
