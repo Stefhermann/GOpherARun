@@ -1,5 +1,6 @@
 "use server";
 
+import { createAdminClient } from "@/utils/supabase/admin";
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 
@@ -24,7 +25,7 @@ import { redirect } from "next/navigation";
  */
 export async function signup(formData: FormData): Promise<void> {
   const supabase = await createClient();
-
+  const supabaseAdmin = await createAdminClient();
   // Extract and type cast form data
   const username = formData.get("username") as string;
   const email = formData.get("email") as string;
@@ -92,7 +93,7 @@ export async function signup(formData: FormData): Promise<void> {
      * Rollback strategy: Delete the auth user if profile update fails
      * to maintain data consistency
      */
-    await supabase.auth.admin.deleteUser(data.user.id);
+    await supabaseAdmin.auth.admin.deleteUser(data.user.id);
     return redirect("/signup?message=Failed-to-create-profile");
   }
 
