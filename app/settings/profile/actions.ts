@@ -1,3 +1,4 @@
+"use server";
 import { createClient } from "@/utils/supabase/server";
 import { createAdminClient } from "@/utils/supabase/admin";
 import { redirect } from "next/navigation";
@@ -41,15 +42,15 @@ export async function updateProfile(formData: FormData) {
 }
 
 export async function deleteProfile() {
-  const supabase = await createClient(); // Normal Clinet to get the user
-  const { data: userData, error: userError } = await supabase.auth.getUser();
+  const supabaseAdmin = await createAdminClient(); // Normal Clinet to get the user
+  const { data: userData, error: userError } =
+    await supabaseAdmin.auth.getUser();
 
   if (userError || !userData?.user?.id) {
     redirect("/login");
   }
 
-  const supabaseAdmin = createAdminClient(); // Admin needed to delete the user
-  await supabaseAdmin.auth.admin.deleteUser(userData.user.id);
+  supabaseAdmin.auth.admin.deleteUser(userData.user.id);
 
   return redirect("/signup?message=Account-deleted-successfully");
 }
