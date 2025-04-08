@@ -11,31 +11,32 @@ import Footer from "@/components/Footer/footer";
 import { useRouter } from "next/navigation";
 import { User } from "@supabase/supabase-js"; 
 
+const supabase = createClient();
+const { data: { users }, error } = await supabase.auth.admin.listUsers()
+console.log(users.find(u => u.email === "user@example.com"))
+
 export default function Home() {
   
     const [user, setUser] = useState<User | null>(null);
+    const [loading, setLoading] = useState(true);
 
     const router = useRouter();
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      const supabase = createClient();
-      const { data: { user } } = await supabase.auth.getUser();
-      setUser(user);
-    };
-
-    fetchUser();
-  }, []);
-  
-  useEffect(() => {
-    if (user === null) {
-      router.push('/');
-    }
-  }, [user]);
-
-  const supabase = createClient();
-
-
+    useEffect(() => {
+        const fetchUser = async () => {
+          const { data: { user } } = await supabase.auth.getUser();
+          setUser(user);
+          console.log(user);
+          setLoading(false);
+        };
+        fetchUser();
+      }, []);
+      
+      useEffect(() => {
+        if (!loading && user === null) {
+          router.push('/');
+        }
+      }, [loading, user]);
 
   const [events, setEvents] = useState<Event[]>([]);
 
