@@ -12,8 +12,6 @@ import { useRouter } from "next/navigation";
 import { User } from "@supabase/supabase-js"; 
 
 const supabase = createClient();
-const { data: { users }, error } = await supabase.auth.admin.listUsers()
-console.log(users.find(u => u.email === "user@example.com"))
 
 export default function Home() {
   

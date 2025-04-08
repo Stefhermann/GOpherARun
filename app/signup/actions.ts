@@ -98,5 +98,6 @@ export async function signup(formData: FormData): Promise<void> {
   }
 
   // Success - redirect to home
-  return redirect("/home");
+  window.location.href = "/home";
+  window.location.reload();
 }

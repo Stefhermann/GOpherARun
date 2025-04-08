@@ -18,14 +18,12 @@ const NavBar = () => {
   const supabase = createClient();
 
   const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
       const fetchUser = async () => {
         const { data: { user } } = await supabase.auth.getUser();
         setUser(user);
         console.log(user);
-        setLoading(false);
       };
       fetchUser();
     }, []);
@@ -67,7 +65,7 @@ const NavBar = () => {
         {/* Center: Navigation Links */}
         <div className="flex justify-center space-x-6">
           <NavLink href="/" label="Home" pathname={pathname} />
-          {!loading && user && (
+          {user && (
             <NavLink href="/events" label="Create Event" pathname={pathname} />
           )}
         </div>
