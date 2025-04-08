@@ -3,10 +3,25 @@
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import NavLink from "@/components/Navigation/nav-links";
+import { createClient } from "@/utils/supabase/client";
+import { useState, useEffect } from "react";
+import { User } from "@supabase/supabase-js";
+import path from "path";
 
 const NavBar = () => {
-
   const pathname = usePathname();
+
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      setUser(user);
+    };
+
+    fetchUser();
+  }, []);
 
   return (
     <header className="bg-white h-16 z-20 shadow-lg relative">
@@ -22,12 +37,11 @@ const NavBar = () => {
 
         {/* Right Side: User Authentication */}
         <div className="flex justify-end">
-          <Link
-            href="/login"
-            className="px-4 py-2 bg-[#7A0019] text-white transition"
-          >
-            Login
-          </Link>
+          {user ? (
+            <NavLink href={`/profiles/${user.user_metadata?.username}`} label="Profile" pathname={pathname} />
+          ) : (
+            <NavLink href="/login" label="Login" pathname={pathname} />
+          )}
         </div>
       </nav>
     </header>

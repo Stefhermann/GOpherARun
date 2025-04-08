@@ -9,16 +9,31 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import Link from "next/link";
 import Footer from "@/components/Footer/footer";
 import { redirect } from "next/navigation";
+import { User } from "@supabase/supabase-js";
+import { useRouter } from "next/router";
 
 
-export default async function Landing() { 
-  const supabase = createClient();
+export default function Landing() { 
   
-  const { data: { user } } = await supabase.auth.getUser();
+  const [user, setUser] = useState<User | null>(null);
 
-  if (user) {
-    redirect('/home');
-  }
+  const router = useRouter();
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      setUser(user);
+    };
+
+    fetchUser();
+  }, []);
+
+  useEffect(() => {
+    if (user !== null) {
+      router.push('/home');
+    }
+  }, [user]);
 
   // const [events, setEvents] = useState<Event[]>([]);
 
