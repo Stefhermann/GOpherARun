@@ -1,5 +1,3 @@
-import { UUID } from "crypto";
-
 export type Json =
   | string
   | number
@@ -38,23 +36,55 @@ export type Database = {
     Tables: {
       events: {
         Row: {
+          creator_id: string;
           id: string;
           location: string;
           time: string;
           title: string;
-          creator_id: UUID;
         };
         Insert: {
+          creator_id: string;
           id?: string;
           location: string;
           time: string;
           title: string;
         };
         Update: {
+          creator_id?: string;
           id?: string;
           location?: string;
           time?: string;
           title?: string;
+        };
+        Relationships: [];
+      };
+      profiles: {
+        Row: {
+          biography: string | null;
+          first_name: string | null;
+          id: string;
+          last_name: string | null;
+          pronouns: string | null;
+          updated_at: string | null;
+          username: string;
+        };
+        Insert: {
+          biography?: string | null;
+          first_name?: string | null;
+          id: string;
+          last_name?: string | null;
+          pronouns?: string | null;
+          updated_at?: string | null;
+          username: string;
+        };
+        Update: {
+          biography?: string | null;
+          first_name?: string | null;
+          id?: string;
+          last_name?: string | null;
+          pronouns?: string | null;
+          updated_at?: string | null;
+          username?: string;
         };
         Relationships: [];
       };
