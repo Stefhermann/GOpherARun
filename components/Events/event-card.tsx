@@ -53,7 +53,7 @@ export default function EventCard({ event, onDelete }: EventCardProps) {
         </div>
       </Link>
 
-      {/* Delete Button (Opens Confirmation Popup) */}
+      {/* Delete Button (Opens Confirmation Popup)
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
           <button className="absolute top-0 right-1 text-black hover:text-[#FFCC33]">
@@ -70,7 +70,7 @@ export default function EventCard({ event, onDelete }: EventCardProps) {
             <Button className="bg-[#7A0019] text-white hover:bg-red-700" onClick={handleDelete}>Delete</Button>
           </DialogFooter>
         </DialogContent>
-      </Dialog>
+      </Dialog> */}
     </div>
   );
 }

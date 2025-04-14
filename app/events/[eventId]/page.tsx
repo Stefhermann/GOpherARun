@@ -36,8 +36,8 @@ export default function EventPage() {
   const [loading, setLoading] = useState(true);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [joinSuccess, setJoinSuccess] = useState(false);
+  const [currentUser, setCurrentUser] = useState<any>(null);
 
-  // Fetch event details
   useEffect(() => {
     const fetchEvent = async () => {
       const { data, error } = await supabase
@@ -45,18 +45,32 @@ export default function EventPage() {
         .select("*")
         .eq("id", eventId)
         .single();
-
+  
       if (error) {
         console.error("Error fetching event:", error.message);
       } else {
         setEvent(data);
       }
-      setLoading(false);
     };
-
-    if (eventId) fetchEvent();
+  
+    const fetchUser = async () => {
+      const { data: { user }, error } = await supabase.auth.getUser();
+      if (error) {
+        console.error("Error fetching user:", error.message);
+      } else {
+        setCurrentUser(user);
+      }
+    };
+  
+    // Fetch user and event simultaneously
+    Promise.all([fetchUser(), fetchEvent()])
+      .then(() => setLoading(false)) // Set loading false after both are done
+      .catch((error) => {
+        console.error("Error during fetch:", error);
+        setLoading(false);
+      });
   }, [eventId]);
-
+  
   // Handle Delete Event
   const handleDelete = async () => {
     const result = await deleteEvent(eventId);
@@ -71,6 +85,9 @@ export default function EventPage() {
   const handleJoin = async () => {
     setJoinSuccess(true); // Open success popup
   };
+
+  console.log(currentUser);
+  console.log(event);
 
   if (loading)
     return <div className="text-center mt-10 text-white">Loading event...</div>;
@@ -157,7 +174,7 @@ export default function EventPage() {
               </Dialog>
 
               {/* Delete Event Button with Confirmation Popup */}
-              <Dialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
+              {(currentUser.id === event.creatorID) && (<Dialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
                 <DialogTrigger asChild>
                   <Button className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 text-lg">
                     Delete Event
@@ -185,7 +202,7 @@ export default function EventPage() {
                     </Button>
                   </DialogFooter>
                 </DialogContent>
-              </Dialog>
+              </Dialog> )}
             </div>
           </div>
 
