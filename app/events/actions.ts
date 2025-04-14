@@ -41,6 +41,7 @@ export async function createEvent(
     location,
     time: new Date(time).toISOString(), // Convert to ISO string for Supabase.
     creator_id: user.data.user.id,
+
   });
 
   if (error) {

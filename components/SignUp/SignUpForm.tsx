@@ -21,7 +21,7 @@ export default function SignUpForm() {
           type="password"
           label="Password"
           required
-          minLength={8}
+          minLength={6}
         />
 
         {/* Add this new field */}
@@ -30,7 +30,7 @@ export default function SignUpForm() {
           type="password"
           label="Confirm Password"
           required
-          minLength={8}
+          minLength={6}
         />
 
         <TextField
