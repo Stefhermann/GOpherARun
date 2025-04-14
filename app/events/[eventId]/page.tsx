@@ -110,14 +110,10 @@ export default function EventPage() {
                   {new Date(event.time).toLocaleString()}
                 </p>
 
-                <p className="text-lg text-gray-700 mt-4">Run Description: </p>
+                {event.description && (<div><p className="text-lg text-gray-700 mt-4">Run Description: </p>
                 <p className="text-md text-gray-700 mt-2">
-                  We&apos;ll be running through scenic trails, maintaining a
-                  steady pace suitable for beginners. This is a great
-                  opportunity to meet fellow runners, enjoy the fresh air, and
-                  challenge yourself. Arrive 5 minutes early to warm up and so
-                  you don’t miss out!
-                </p>
+                  {event.description}
+                </p></div>)}
               </div>
 
               {/* Right Section - Scrollable Participants List */}
@@ -174,7 +170,7 @@ export default function EventPage() {
               </Dialog>
 
               {/* Delete Event Button with Confirmation Popup */}
-              {(currentUser.id === event.creatorID) && (<Dialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
+              {(currentUser.id == event.creator_id) && (<Dialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
                 <DialogTrigger asChild>
                   <Button className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 text-lg">
                     Delete Event

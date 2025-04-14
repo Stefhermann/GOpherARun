@@ -17,44 +17,44 @@ const NavBar = () => {
   const pathname = usePathname();
   const supabase = createClient();
 
-  const [user, setUser] = useState<User | null>(null);
+  // const [user, setUser] = useState<User | null>(null);
 
-  useEffect(() => {
-      const fetchUser = async () => {
-        const { data: { user } } = await supabase.auth.getUser();
-        setUser(user);
-        console.log(user);
-      };
-      fetchUser();
-    }, []);
+  // useEffect(() => {
+  //     const fetchUser = async () => {
+  //       const { data: { user } } = await supabase.auth.getUser();
+  //       setUser(user);
+  //       console.log(user);
+  //     };
+  //     fetchUser();
+  //   }, []);
 
   //use this when profile fetching figured out
 
-  // const [profile, setProfile] = useState<Profile | null>(null);
+  const [profile, setProfile] = useState<Profile | null>(null);
 
-  // useEffect(() => {
-  //   const fetchProfile = async () => {
-  //     const supabase = createClient();
-  //     const { data: { user },
-  //             error: userError,
-  //     } = await supabase.auth.getUser();
-  //     console.log(user);
-  //     if (userError || !user) return;
-  //     const { data, error } = await supabase
-  //       .from("profiles")
-  //       .select("id,username")
-  //       .eq("id", user.id);
-  //     if (error) {
-  //       console.error("Profile fetch error:", error.message);
-  //     } else if (data && data.length > 0) {
-  //       setProfile(data[0]);
-  //     } else {
-  //       console.warn("No profile found for user ID:", user.id);
-  //     }
-  //   };
+  useEffect(() => {
+    const fetchProfile = async () => {
+      const supabase = createClient();
+      const { data: { user },
+              error: userError,
+      } = await supabase.auth.getUser();
+      console.log(user);
+      if (userError || !user) return;
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("id,username")
+        .eq("id", user.id);
+      if (error) {
+        console.error("Profile fetch error:", error.message);
+      } else if (data && data.length > 0) {
+        setProfile(data[0]);
+      } else {
+        console.warn("No profile found for user ID:", user.id);
+      }
+    };
 
-  //   fetchProfile();
-  // }, []);
+    fetchProfile();
+  }, []);
 
   return (
     <header className="bg-white h-16 z-20 shadow-lg relative">
@@ -65,16 +65,16 @@ const NavBar = () => {
         {/* Center: Navigation Links */}
         <div className="flex justify-center space-x-6">
           <NavLink href="/" label="Home" pathname={pathname} />
-          {user && (
+          {profile && (
             <NavLink href="/events" label="Create Event" pathname={pathname} />
           )}
         </div>
 
         {/* Right Side: User Authentication */}
         <div className="flex justify-end">
-          {user ? (
+          {profile ? (
             <>
-            <NavLink href={`/profiles`} label="Profile" pathname={pathname} />
+            <NavLink href={`/settings/profile`} label="Profile" pathname={pathname} />
             {/* Add the Sign-Out Button here */}
             <button
               className="ml-4 bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600"

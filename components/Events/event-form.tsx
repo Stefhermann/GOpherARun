@@ -68,6 +68,22 @@ export default function EventForm() {
           />
         </div>
 
+        {/* Description Field */}
+        <div>
+          <label
+            htmlFor="description"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Description
+          </label>
+          <textarea
+            id="description"
+            name="description"
+            className="mt-1 w-full rounded-md border border-gray-300 p-2 text-gray-900 focus:border-blue-500 focus:ring-blue-500 h-32"
+            placeholder="Describe your run..."
+          />
+        </div>
+
         {/* Submit Button */}
         <div>
           <button
