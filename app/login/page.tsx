@@ -1,13 +1,30 @@
+"use client";
+
 import { login } from "@/app/login/actions";
 import Link from "next/link";
+import { useActionState } from "react";
+
+const initialState = { message: null };
 
 export default function LoginPage() {
+  const [state, formAction] = useActionState(login, initialState);
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-[url('/GopherRunBackground.webp')] bg-cover bg-no-repeat">
-      <form className="bg-white p-8 rounded-lg shadow-md w-full max-w-sm">
+      <form
+        action={formAction}
+        className="bg-white p-8 rounded-lg shadow-md w-full max-w-sm"
+      >
         <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">
           Welcome Back!
         </h2>
+
+        {/*  Show login error if it exists */}
+        {state.message && (
+          <div className="text-red-600 text-sm text-center mb-4">
+            {state.message}
+          </div>
+        )}
 
         {/* Email Field */}
         <div className="mb-4">
@@ -45,14 +62,14 @@ export default function LoginPage() {
 
         {/* Login Button */}
         <button
-          formAction={login}
+          type="submit"
           className="w-full bg-[#7A0019] text-white py-2 px-4 rounded-md hover:bg-[#7a00188e]"
         >
           Log in
         </button>
 
         <div className="mt-4 text-center text-sm text-gray-600">
-          Don't have an account?{" "}
+          Don&apos;t have an account?{" "}
           <Link href="/signup" className="text-blue-600 hover:underline">
             Sign up
           </Link>
