@@ -36,3 +36,13 @@ export async function login(
 
   redirect("/");
 }
+
+/**
+ * Logout Server Action
+ * - Logs the user out
+ */
+export async function logout() {
+  const supabase = await createClient();
+  await supabase.auth.signOut();
+  redirect("/");
+}
