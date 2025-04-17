@@ -5,9 +5,8 @@ import Link from "next/link";
 
 /**
  * NavBar (Server Component)
- * --------------------------
- * Hybrid navigation bar that adapts based on user auth status.
- * Uses server-side Supabase client to detect login state.
+ * - Hybrid navigation bar that adapts based on user auth status.
+ * - Uses server-side Supabase client to detect login state.
  */
 export default async function NavBar() {
   const supabase = await createClient();

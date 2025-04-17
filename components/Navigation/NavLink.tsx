@@ -6,8 +6,7 @@ import { NavLinkProps } from "./types";
 
 /**
  * NavLink (Client Component)
- * --------------------------
- * Nav link with gold hover and underline for active route.
+ * - Nav link with gold hover and underline for active route.
  */
 export default function NavLink({ href, label }: NavLinkProps) {
   const pathname = usePathname();

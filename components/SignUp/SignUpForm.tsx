@@ -12,7 +12,7 @@ import { useActionState } from "react";
 const initialState = { message: null };
 
 /**
- * Signup Form Component
+ * SignUpForm (Client Component)
  * - Uses server action + useFormState for server validation
  * - Displays form errors
  */
@@ -71,7 +71,7 @@ export default function SignUpForm() {
           placeholder="e.g., she/her, they/them"
         />
 
-        {/* ✅ Server-safe button with styling */}
+        {/* Server-safe button with styling */}
         <SubmitButton />
         <AuthFooter />
       </form>
