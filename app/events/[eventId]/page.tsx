@@ -17,16 +17,16 @@ import {
 import Image from "next/image";
 
 // Fake participants list for frontend testing
-const mockParticipants = [
-  { id: 1, name: "John Doe" },
-  { id: 2, name: "Jane Smith" },
-  { id: 3, name: "Michael Johnson" },
-  { id: 4, name: "Emily Williams" },
-  { id: 5, name: "David Brown" },
-  { id: 6, name: "Stefan Hermann" },
-  { id: 7, name: "Sidd Lotlikar" },
-  { id: 8, name: "Xander Hill" },
-];
+// const mockParticipants = [
+//   { id: 1, name: "John Doe" },
+//   { id: 2, name: "Jane Smith" },
+//   { id: 3, name: "Michael Johnson" },
+//   { id: 4, name: "Emily Williams" },
+//   { id: 5, name: "David Brown" },
+//   { id: 6, name: "Stefan Hermann" },
+//   { id: 7, name: "Sidd Lotlikar" },
+//   { id: 8, name: "Xander Hill" },
+// ];
 
 export default function EventPage() {
   const { eventId } = useParams();
@@ -37,6 +37,7 @@ export default function EventPage() {
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [joinSuccess, setJoinSuccess] = useState(false);
   const [currentUser, setCurrentUser] = useState<any>(null);
+  const [participants, setParticipants] = useState<any>(null);
 
   useEffect(() => {
     const fetchEvent = async () => {
@@ -61,9 +62,22 @@ export default function EventPage() {
         setCurrentUser(user);
       }
     };
+
+    const fetchParticipants = async () => {
+      const { data, error } = await supabase
+        .from("participants")
+        .select("profiles(*)")
+        .eq("event_id", eventId);
+
+        if (error) {
+          console.error("Error fetching participants:", error.message);
+          return [];
+        }
+        setParticipants(data);
+    }
   
     // Fetch user and event simultaneously
-    Promise.all([fetchUser(), fetchEvent()])
+    Promise.all([fetchUser(), fetchEvent(), fetchParticipants()])
       .then(() => setLoading(false)) // Set loading false after both are done
       .catch((error) => {
         console.error("Error during fetch:", error);
@@ -82,12 +96,42 @@ export default function EventPage() {
   };
 
   // Handle Join Event (Shows Popup)
-  const handleJoin = async () => {
-    setJoinSuccess(true); // Open success popup
+  const joinEvent = async (userId: string, eventId: string) => {
+    const { data, error } = await supabase
+      .from("participants")
+      .insert([{ user_id: userId, event_id: eventId, joined_at: new Date() }]);
+  
+    if (error) {
+      console.error("Error joining event:", error.message);
+      return { success: false, message: error.message };
+    }
+  
+    return { success: true, message: "Event joined successfully!" };
   };
 
-  console.log(currentUser);
-  console.log(event);
+  const leaveEvent = async (user_id: string, event_id: string) => { 
+    // Delete the participant entry for this user/event
+    const { error } = await supabase
+      .from("participants")
+      .delete()
+      .match({ user_id, event_id });
+  
+    if (error) {
+      console.error("Error leaving event:", error.message);
+      return { success: false, message: "Failed to leave event." };
+    }
+  
+    return { success: true, message: "Successfully left event." };
+  };
+  
+  
+  const participantCount = participants?.length ?? 0;
+
+  const isParticipating = participants?.some(
+    (participant) => participant.profiles.id === currentUser.id
+  ) ?? false;
+
+  console.log(isParticipating);
 
   if (loading)
     return <div className="text-center mt-10 text-white">Loading event...</div>;
@@ -120,24 +164,24 @@ export default function EventPage() {
               <div>
                 <h3 className="flex mt-2 text-xl font-bold text-[#7A0019] mb-2 justify-between">
                   Participants
-                  <p className="mt-1 text-sm text-black">8/10 People</p>
+                  <p className="mt-1 text-sm text-black">{participantCount} People</p>
                 </h3>
                 <ScrollArea className="h-80 w-full rounded-lg border">
                   <div className="p-3 space-y-3">
-                    {mockParticipants.map((participant) => (
+                    {participants.map((participant) => (
                       <div
-                        key={participant.id}
+                        key={participant.profiles.id}
                         className="flex items-center space-x-3 bg-gray-100 p-2 rounded-lg shadow-sm"
                       >
                         <Image
                           src="/UnknownUser.png"
-                          alt={participant.name}
+                          alt={participant.profiles.first_name}
                           width={40}
                           height={40}
                           className="rounded-full"
                         />
                         <p className="text-gray-900 font-medium">
-                          {participant.name}
+                          {participant.profiles.username}
                         </p>
                       </div>
                     ))}
@@ -149,11 +193,11 @@ export default function EventPage() {
 
             <div className="mt-6 flex justify-center space-x-4">
               {/* Join Event Button with Success Popup */}
-              <Dialog open={joinSuccess} onOpenChange={setJoinSuccess}>
+              {!isParticipating ? (<Dialog open={joinSuccess} onOpenChange={setJoinSuccess}>
                 <DialogTrigger asChild>
                   <Button
                     className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 text-lg"
-                    onClick={handleJoin}
+                    onClick={() => joinEvent(currentUser.id, event.id)}
                   >
                     Join Event
                   </Button>
@@ -167,7 +211,27 @@ export default function EventPage() {
                     <Button onClick={() => setJoinSuccess(false)}>OK</Button>
                   </DialogFooter>
                 </DialogContent>
-              </Dialog>
+              </Dialog>)
+                : (<Dialog open={joinSuccess} onOpenChange={setJoinSuccess}>
+                  <DialogTrigger asChild>
+                    <Button
+                      className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 text-lg"
+                      onClick={() => leaveEvent(currentUser.id, event.id)}
+                    >
+                      Leave Event
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="bg-white text-gray-900">
+                    <DialogTitle>Success</DialogTitle>
+                    <DialogDescription>
+                      You have successfully left the event :/
+                    </DialogDescription>
+                    <DialogFooter>
+                      <Button onClick={() => setJoinSuccess(false)}>OK</Button>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>)
+                }
 
               {/* Delete Event Button with Confirmation Popup */}
               {(currentUser.id == event.creator_id) && (<Dialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
