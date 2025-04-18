@@ -1,5 +1,9 @@
 import Link from "next/link";
 
+/**
+ * AuthFooter (Client Component)
+ * - A footer link prompting users to log in if they already have an account.
+ */
 export default function AuthFooter() {
   return (
     <div className="text-center text-sm text-[#333]">

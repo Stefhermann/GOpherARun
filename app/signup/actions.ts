@@ -1,103 +1,106 @@
 "use server";
 
-import { createAdminClient } from "@/utils/supabase/admin";
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
+import { z } from "zod";
 
 /**
- * Handles user signup by:
- * 1. Validating form inputs
- * 2. Creating auth user (which triggers profile creation)
- * 3. Updating the profile with additional user information
- * 4. Handling errors and rollbacks when needed
- *
- * @param {FormData} formData - The form data containing:
- *   - email: string
- *   - password: string
- *   - confirmPassword: string
- *   - username: string (required, min 3 chars)
- *   - firstName: string
- *   - lastName: string
- *   - bio: string (optional)
- *   - pronouns: string (optional)
- * @returns {Promise<void>} Redirects to appropriate page
- * @throws {Error} May throw errors during Supabase operations
+ * Define a validation schema using Zod
+ * - Enforces username format, email, password length
+ * - Adds a custom refinement to ensure password === confirmPassword
  */
-export async function signup(formData: FormData): Promise<void> {
+const SignupSchema = z
+  .object({
+    username: z
+      .string()
+      .min(3)
+      .max(32)
+      .regex(/^[A-Za-z][A-Za-z0-9]*$/, { // I hate regex, but damn its useful
+        message:
+          "Username must start with a letter and only contain letters or numbers (no symbols).",
+      }),
+    email: z.string().email(),
+    password: z.string().min(6),
+    confirmPassword: z.string(),
+    firstName: z.string().optional(),
+    lastName: z.string().optional(),
+    bio: z.string().optional(),
+    pronouns: z.string().optional(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords do not match.",
+    path: ["confirmPassword"],
+  });
+
+/**
+ * Form state structure shared with the client
+ */
+export type SignupFormState = {
+  message: string | null;
+};
+
+/**
+ * Server Action: Handles form submission from the signup page
+ */
+export async function signup(
+  prevState: SignupFormState,
+  formData: FormData
+): Promise<SignupFormState> {
   const supabase = await createClient();
-  const supabaseAdmin = await createAdminClient();
-  // Extract and type cast form data
-  const username = formData.get("username") as string;
-  const email = formData.get("email") as string;
-  const password = formData.get("password") as string;
-  const confirmPassword = formData.get("confirmPassword") as string;
-  const firstName = formData.get("firstName") as string;
-  const lastName = formData.get("lastName") as string;
-  const bio = formData.get("bio") as string;
-  const pronouns = formData.get("pronouns") as string;
 
-  // Validate auth inputs
-  if (password !== confirmPassword) {
-    return redirect("/signup?message=Passwords-do-not-match");
+  // Parse raw form data into usable strings
+  const data = {
+    username: formData.get("username") as string,
+    email: formData.get("email") as string,
+    password: formData.get("password") as string,
+    confirmPassword: formData.get("confirmPassword") as string,
+    firstName: formData.get("firstName") as string,
+    lastName: formData.get("lastName") as string,
+    bio: formData.get("bio") as string,
+    pronouns: formData.get("pronouns") as string,
+  };
+
+  // Run validation using Zod
+  const parsed = SignupSchema.safeParse(data);
+  if (!parsed.success) {
+    // Return first validation error to the frontend
+    return { message: parsed.error.errors[0].message };
   }
 
-  if (!username || username.length < 3) {
-    return redirect("/signup?message=Username-must-be-at-least-3-characters");
-  }
-
-  /**
-   * Create auth user - this automatically triggers the profile creation
-   * through the PostgreSQL trigger we set up
-   */
-  const { data, error } = await supabase.auth.signUp({
-    email,
-    password,
+  // Create Supabase user (triggers row in `profiles` via PostgreSQL trigger)
+  const { error, data: userData } = await supabase.auth.signUp({
+    email: data.email,
+    password: data.password,
     options: {
       data: {
-        username, // Passed to trigger for initial profile creation
+        username: data.username, // important: must match trigger logic
       },
     },
   });
 
-  // Handle auth errors
-  if (error) {
-    console.error("Auth error:", error.message);
-    return redirect(`/signup?message=${encodeURIComponent(error.message)}`);
+  // Handle user creation errors
+  if (error || !userData.user) {
+    return { message: error?.message || "Account creation failed" };
   }
 
-  if (!data.user) {
-    console.error("No user data returned");
-    return redirect("/signup?message=Account-creation-failed");
-  }
+  // Wait briefly to allow the database trigger to create the `profiles` row
+  await new Promise((r) => setTimeout(r, 500));
 
-  /**
-   * Update profile with additional information that wasn't
-   * included in the initial trigger-based creation
-   */
+  // Update the profile with optional extra fields
   const { error: profileError } = await supabase
     .from("profiles")
     .update({
-      first_name: firstName,
-      last_name: lastName,
-      biography: bio,
-      pronouns,
-      updated_at: new Date().toISOString(),
+      first_name: data.firstName,
+      last_name: data.lastName,
+      biography: data.bio,
+      pronouns: data.pronouns,
     })
-    .eq("id", data.user.id);
+    .eq("id", userData.user.id);
 
-  // Handle profile update failures
   if (profileError) {
-    console.error("Profile update error:", profileError.message);
-
-    /**
-     * Rollback strategy: Delete the auth user if profile update fails
-     * to maintain data consistency
-     */
-    await supabaseAdmin.auth.admin.deleteUser(data.user.id);
-    return redirect("/signup?message=Failed-to-create-profile");
+    return { message: "Profile update failed." };
   }
 
-  // Success - redirect to home
-  window.location.href = "/home";
-  window.location.reload();
+  // On success, redirect to home
+  redirect("/");
 }
