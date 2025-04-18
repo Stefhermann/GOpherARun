@@ -2,6 +2,7 @@
 
 /**
  * SubmitButton (Client Component)
+ * -------------------------------
  * - A styled form submit button with UMN-themed colors.
  */
 export default function SubmitButton() {
