@@ -19,7 +19,7 @@ export default function DeleteAccountButton() {
     <>
       <button
         onClick={() => setShowModal(true)}
-        className="bg-red-600 text-white px-4 py-2 rounded"
+        className="bg-[#7A0019] text-white px-4 py-2 rounded cursor-pointer hover:bg-[#600016] transition"
         disabled={isPending}
       >
         {isPending ? 'Deleting...' : 'Delete Account'}
