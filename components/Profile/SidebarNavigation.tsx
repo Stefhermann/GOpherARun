@@ -6,7 +6,7 @@ import React from 'react';
 const navItems = [
   { label: 'Settings', path: '/settings/profile' },
   { label: 'Friend Requests', path: '/friends/requests' },
-  { label: 'Friend List', path: '/friends/list' },
+  { label: 'Friend List', path: '/friends' },
 ];
 
 export default function SidebarNav() {
