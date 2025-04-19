@@ -2,6 +2,7 @@
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import { updateProfile, deleteProfile } from "@/app/settings/profile/actions";
+import DeleteAccountButton from "@/components/Profile/DeleteButton";
 
 export default async function EditProfilePage() {
   const supabase = await createClient();
@@ -112,14 +113,7 @@ export default async function EditProfilePage() {
         <hr className="my-8" />
 
         {/* Delete Account */}
-        <form action={deleteProfile}>
-          <button
-            type="submit"
-            className="text-red-600 hover:underline font-medium text-sm"
-          >
-            Delete My Account
-          </button>
-        </form>
+        <DeleteAccountButton />
       </div>
     </div>
   );
