@@ -1,5 +1,5 @@
 /**
- * Props passed to NavLink component
+ * Props passed to `NavLink` component
  */
 export type NavLinkProps = {
   href: string;

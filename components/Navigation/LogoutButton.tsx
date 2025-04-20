@@ -3,7 +3,8 @@ import { logout } from "@/app/login/actions";
 
 /**
  * LogoutButton (Server Component)
- * - Triggers Supabase sign-out and redirects to homepage.
+ * --------------------------------
+ * Triggers Supabase sign-out and redirects to homepage.
  */
 export default async function LogoutButton() {
   return (
