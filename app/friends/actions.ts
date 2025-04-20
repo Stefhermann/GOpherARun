@@ -425,3 +425,48 @@ export async function getFriendsList(): Promise<UserProfile[]> {
 
   return profiles;
 }
+
+/**
+ * searchUsers() Server Action
+ * ---------------------------
+ * Searches users by partial username for the purpose of sending friend requests.
+ *
+ * - Performs a case-insensitive prefix match (e.g., "jo" matches "john", "Joanna")
+ * - Limits results to prevent overload (e.g., 10 max)
+ * - Excludes the currently logged-in user from the results
+ *
+ * @param query - The partial username string to search for
+ * @returns An array of matching public user profiles (id, username, first_name, last_name)
+ */
+export async function searchUsers(query: string): Promise<UserProfile[]> {
+  const supabase = await createClient();
+
+  // Get the current authenticated user
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser();
+
+  if (authError || !user) {
+    return [];
+  }
+
+  if (!query || query.trim().length === 0) {
+    return [];
+  }
+
+  // Perform case-insensitive prefix search on username, excluding the current user
+  const { data: users, error: searchError } = await supabase
+    .from("profiles")
+    .select("id, username, first_name, last_name")
+    .ilike("username", `${query.trim()}%`)
+    .neq("id", user.id)
+    .limit(10);
+
+  if (searchError) {
+    console.error("Error searching users:", searchError.message);
+    return [];
+  }
+
+  return users ?? [];
+}
