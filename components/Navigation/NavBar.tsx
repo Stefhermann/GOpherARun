@@ -52,6 +52,7 @@ export default async function NavBar() {
             <>
               <NavLink href="/home" label="Home" />
               <NavLink href="/events" label="Create Event" />
+              <NavLink href="/profiles" label="Find Friends" />
             </>
           ) : (
             <>

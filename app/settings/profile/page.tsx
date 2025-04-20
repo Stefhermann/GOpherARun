@@ -2,6 +2,8 @@
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import { updateProfile, deleteProfile } from "@/app/settings/profile/actions";
+import DeleteAccountButton from "@/components/Profile/DeleteButton";
+import SidebarNav from "@/components/Profile/SidebarNavigation";
 
 export default async function EditProfilePage() {
   const supabase = await createClient();
@@ -24,7 +26,8 @@ export default async function EditProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="flex min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+      <SidebarNav />
       <div className="max-w-3xl mx-auto bg-white border border-gray-200 rounded-xl shadow-md p-8">
         <h1 className="text-3xl font-bold text-[#7A0019] mb-8">
           Edit Your Profile
@@ -101,7 +104,7 @@ export default async function EditProfilePage() {
           <div>
             <button
               type="submit"
-              className="inline-block w-full sm:w-auto bg-[#7A0019] text-white font-semibold px-6 py-2 rounded-md hover:bg-[#600016] transition"
+              className="inline-block w-full sm:w-auto bg-[#7A0019] text-white font-semibold px-4 py-2 rounded-md hover:bg-[#600016] transition cursor-pointer text-sm"
             >
               Save Changes
             </button>
@@ -112,14 +115,7 @@ export default async function EditProfilePage() {
         <hr className="my-8" />
 
         {/* Delete Account */}
-        <form action={deleteProfile}>
-          <button
-            type="submit"
-            className="text-red-600 hover:underline font-medium text-sm"
-          >
-            Delete My Account
-          </button>
-        </form>
+        <DeleteAccountButton />
       </div>
     </div>
   );
