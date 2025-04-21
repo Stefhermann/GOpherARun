@@ -1,9 +1,9 @@
 'use client';
 
 import { useTransition, useState } from "react";
-import { sendFriendRequest } from "@/app/friends/actions";
+import { acceptFriendRequest } from "@/app/friends/actions";
 
-export function SendFriendRequestButton({ receiverId }: { receiverId: string }) {
+export function AcceptFriendRequestButton({ senderId }: { senderId: string }) {
   const [isPending, startTransition] = useTransition();
   const [status, setStatus] = useState<null | string>(null);
 
@@ -12,17 +12,16 @@ export function SendFriendRequestButton({ receiverId }: { receiverId: string }) 
       <button
         onClick={() =>
           startTransition(async () => {
-            const res = await sendFriendRequest(receiverId);
+            const res = await acceptFriendRequest(senderId);
             setStatus(res.message);
           })
         }
-        className="ml-4 rounded bg-[#7A0019] px-4 py-2 text-white hover:bg-[#5A0012] transition cursor-pointer"
+        className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700 transition"
         disabled={isPending}
       >
-        {isPending ? "Sending..." : "Add Friend"}
+        {isPending ? "Sending..." : "Accept"}
       </button>
       {status && <p className="text-sm text-gray-600 mt-2">{status}</p>}
     </>
   );
 }
-

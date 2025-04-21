@@ -147,6 +147,9 @@ export async function acceptFriendRequest(
     return { success: false, message: "Cannot accept your own request." };
   }
 
+  console.log(senderId);
+  console.log(receiverId);
+
   // Verify the friend request exists and is directed to this user
   const { data: request, error: requestError } = await supabase
     .from("friend_requests")
@@ -165,8 +168,8 @@ export async function acceptFriendRequest(
 
   // Insert two rows into the friends table (bidirectional friendship)
   const { error: insertError } = await supabase.from("friends").insert([
-    { user_one: senderId, user_two: receiverId },
-    { user_one: receiverId, user_two: senderId },
+    { user_initiator: senderId, user_friend: receiverId },
+    { user_friend: receiverId, user_initiator: senderId },
   ]);
 
   if (insertError) {
