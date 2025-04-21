@@ -273,7 +273,7 @@ export async function declineFriendRequest(
 export async function removeFriend(friendId: string): Promise<ActionResponse> {
   const supabase = await createClient();
 
-  // Get the currently logged-in user
+  // Get the currently authenticated user
   const { data: session, error: authError } = await supabase.auth.getUser();
   const userId = session?.user?.id;
 
@@ -281,7 +281,7 @@ export async function removeFriend(friendId: string): Promise<ActionResponse> {
     return { success: false, message: "Authentication required." };
   }
 
-  // Prevent self-deletion edge cases
+  // Prevent edge case of unfriending self
   if (userId === friendId) {
     return {
       success: false,
@@ -289,16 +289,11 @@ export async function removeFriend(friendId: string): Promise<ActionResponse> {
     };
   }
 
-  // Sort the user IDs into a consistent order for uniqueness check
-  const [userLow, userHigh] =
-    userId < friendId ? [userId, friendId] : [friendId, userId];
-
-  // Attempt to delete the friendship
-  const { error: deleteError } = await supabase
-    .from("friends")
-    .delete()
-    .eq("user_low", userLow)
-    .eq("user_high", userHigh);
+  // Delete the directional friendship where the user is the initiator
+  const { error: deleteError } = await supabase.from("friends").delete().match({
+    user_initiator: userId, // Current user must be initiator (RLS enforced)
+    user_friend: friendId, // Target friend is the one being removed
+  });
 
   if (deleteError) {
     return {
@@ -352,8 +347,9 @@ export async function getFriendStatus(
   const { data: friendsData } = await supabase
     .from("friends")
     .select("id")
-    .eq("user_low", userLow)
-    .eq("user_high", userHigh)
+    .or(
+      `and(user_initiator.eq.${currentUserId},user_friend.eq.${targetUserId}),and(user_initiator.eq.${targetUserId},user_friend.eq.${currentUserId})`
+    )
     .maybeSingle();
 
   if (friendsData) return "friends";
@@ -408,13 +404,13 @@ export async function getFriendsList(): Promise<UserProfile[]> {
   // Query all friend relationships for current user and fetch the other profile
   const { data: friendships, error: fetchError } = await supabase
     .from("friends")
-    .select("user_low, user_high, created_at")
-    .or(`user_low.eq.${userId},user_high.eq.${userId}`);
+    .select("user_initiator, user_friend")
+    .or(`user_initiator.eq.${userId},user_friend.eq.${userId}`);
 
   if (fetchError || !friendships) return [];
 
   const friendIds = friendships.map((f) =>
-    f.user_low === userId ? f.user_high : f.user_low
+    f.user_initiator === userId ? f.user_friend : f.user_initiator
   );
 
   if (friendIds.length === 0) return [];
