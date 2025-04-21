@@ -2,6 +2,7 @@ import SidebarNav from "@/components/Profile/SidebarNavigation";
 import { createClient } from "@/utils/supabase/server";
 import { notFound } from "next/navigation";
 import { AcceptFriendRequestButton } from "@/components/Friends/AcceptFriendRequestButton";
+import { DeclineFriendRequestButton } from "@/components/Friends/DeclineFriendRequestButton";
 
 export default async function FriendRequestsPage() {
   const supabase = await createClient();
@@ -49,11 +50,7 @@ export default async function FriendRequestsPage() {
                 {/* Placeholder for Accept/Decline actions */}
                 <div className="space-x-2">
                   <AcceptFriendRequestButton senderId={req.sender_id}/>
-                  <form action={`/friends/decline/${req.id}`} method="POST">
-                    <button className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700">
-                      Decline
-                    </button>
-                  </form>
+                  <DeclineFriendRequestButton senderId={req.sender_id} />
                 </div>
               </li>
             ))}
