@@ -167,10 +167,9 @@ export async function acceptFriendRequest(
   }
 
   // Insert two rows into the friends table (bidirectional friendship)
-  const { error: insertError } = await supabase.from("friends").insert([
-    { user_initiator: senderId, user_friend: receiverId },
-    { user_friend: receiverId, user_initiator: senderId },
-  ]);
+  const { error: insertError } = await supabase
+    .from("friends")
+    .insert([{ user_initiator: receiverId, user_friend: senderId }]);
 
   if (insertError) {
     return {
