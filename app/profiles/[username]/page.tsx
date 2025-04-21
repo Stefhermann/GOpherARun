@@ -1,8 +1,8 @@
 import { createClient } from "@/utils/supabase/server";
 import { notFound } from "next/navigation";
-import EventCard from "@/components/Events/event-card";
 import UserEventList from "@/components/Events/UserEventList";
 import { Event } from "@/types/custom";
+import { SendFriendRequestButton } from "@/components/Friends/SendFriendRequestButton";
 
 export default async function UserProfilePage({
   params,
@@ -41,7 +41,8 @@ export default async function UserProfilePage({
   return (
     <div className="min-h-screen bg-white text-gray-900 px-6 py-12 flex justify-center items-start">
       <div className="w-full max-w-2xl border border-gray-200 rounded-lg shadow-lg p-8">
-        <div className="mb-6 border-b border-gray-300 pb-4">
+      <div className="mb-6 border-b border-gray-300 pb-4 flex justify-between items-center">
+        <div>
           <h1 className="text-4xl font-bold text-[#7A0019]">
             @{profile.username}
           </h1>
@@ -49,6 +50,8 @@ export default async function UserProfilePage({
             {profile.first_name} {profile.last_name}
           </p>
         </div>
+        <SendFriendRequestButton receiverId={profile.id} />
+      </div>
 
         {profile.biography && (
           <div className="mb-4">
