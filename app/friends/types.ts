@@ -26,8 +26,9 @@ export interface UserProfile {
   username: string;
 
   /** Optional: User's first name (can be used for display or personalization) */
-  first_name?: string;
+  first_name: string;
 
   /** Optional: User's last name */
   last_name?: string;
+
 }
