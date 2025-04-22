@@ -21,8 +21,8 @@ export default function FriendRequestList({ requestsWithProfiles }) {
             <ul className="space-y-4">
             {requests.map((req) => (
                 <li
-                key={req.id}
-                className="p-4 border rounded shadow-sm flex items-center justify-between"
+                  key={req.id}
+                  className="p-4 border rounded shadow-sm flex items-center justify-between"
                 >
                 <div>
                     <p className="text-lg font-medium">

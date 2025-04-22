@@ -1,32 +1,32 @@
-'use client';
+"use client";
 
-import { useTransition, useState } from "react";
-import { sendFriendRequest } from "@/app/friends/actions";
+import { useState } from 'react';
+import { sendFriendRequest } from '@/app/friends/actions';
 
-export function SendFriendRequestButton({ receiverId }: { receiverId: string }) {
-  const [isPending, startTransition] = useTransition();
-  const [status, setStatus] = useState<null | string>(null);
+export const SendFriendRequestButton = ({ receiverId }: { receiverId: string}) => {
+  const [isDisabled, setIsDisabled] = useState(false); // State to handle button disabling
 
-  const alreadySent = status === "Request sent";
+  const handleClick = async () => {
+    setIsDisabled(true); // Disable the button immediately after click
+
+    try {
+      // Send the friend request to Supabase
+      sendFriendRequest(receiverId);
+    } catch (error) {
+      console.error("Error occurred while sending friend request:", error);
+    }
+  };
 
   return (
-    <>
-      <button
-        onClick={() => {
-          if (alreadySent) return;
-          startTransition(async () => {
-            const res = await sendFriendRequest(receiverId);
-            setStatus(res.message);
-          });
-        }}
-        className="ml-4 rounded bg-[#7A0019] px-4 py-2 text-white hover:bg-[#5A0012] transition cursor-pointer disabled:opacity-50"
-        disabled={isPending || alreadySent}
-      >
-        {alreadySent ? "Request Sent" : isPending ? "Sending..." : "Add Friend"}
-      </button>
-      {status && <p className="text-sm text-gray-600 mt-2">{status}</p>}
-    </>
+    <button 
+      onClick={handleClick}
+      disabled={isDisabled}  // The button will be disabled immediately after click
+      className="btn btn-primary"
+    >
+      Send Friend Request
+    </button>
   );
-}
+};
+
 
 
