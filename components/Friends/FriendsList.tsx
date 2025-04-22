@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { getFriendsList } from "@/app/friends/actions";
 import { RemoveFriendButton } from "./RemoveFriendButton";
+import Link from "next/link";
 
 interface UserProfile {
   id: string;
@@ -47,12 +48,21 @@ export function FriendsList() {
               key={friend.id}
               className="flex items-center justify-between px-4 py-4 hover:bg-gray-50 transition"
             >
-              <div>
+              <Link
+                href={`/profiles/${friend.username}`}
+                className="block px-4 py-2 border rounded-md hover:bg-gray-100 transition"
+              >
                 <p className="text-lg font-medium text-gray-800">
                   {friend.first_name} {friend.last_name}
                 </p>
                 <p className="text-sm text-gray-500">@{friend.username}</p>
-              </div>
+              </Link>
+              {/* <div>
+                <p className="text-lg font-medium text-gray-800">
+                  {friend.first_name} {friend.last_name}
+                </p>
+                <p className="text-sm text-gray-500">@{friend.username}</p>
+              </div> */}
               <RemoveFriendButton friendId={friend.id} />
             </li>
           ))}
