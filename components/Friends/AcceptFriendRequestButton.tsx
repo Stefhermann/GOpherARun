@@ -12,7 +12,7 @@ export function AcceptFriendRequestButton({
 
   const handleClick = async () => {
     setLoading(true);
-    await acceptFriendRequest(senderId); // your logic
+    await acceptFriendRequest(senderId);
     onSuccess();
   };
 
