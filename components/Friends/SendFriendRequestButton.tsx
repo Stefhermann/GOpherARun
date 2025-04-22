@@ -3,8 +3,8 @@
 import { useState } from 'react';
 import { sendFriendRequest } from '@/app/friends/actions';
 
-export const SendFriendRequestButton = ({ receiverId }: { receiverId: string}) => {
-  const [isDisabled, setIsDisabled] = useState(false); // State to handle button disabling
+export const SendFriendRequestButton = ({ receiverId, wasDisabled }: { receiverId: string, wasDisabled: boolean}) => {
+  const [isDisabled, setIsDisabled] = useState(wasDisabled); // State to handle button disabling
 
   const handleClick = async () => {
     setIsDisabled(true); // Disable the button immediately after click
@@ -21,7 +21,10 @@ export const SendFriendRequestButton = ({ receiverId }: { receiverId: string}) =
     <button 
       onClick={handleClick}
       disabled={isDisabled}  // The button will be disabled immediately after click
-      className="btn btn-primary"
+      className={`px-4 py-2 rounded-lg font-semibold text-white transition duration-200 
+      ${isDisabled 
+        ? 'bg-green-300 cursor-not-allowed' 
+        : 'bg-green-500 hover:bg-green-600 active:bg-green-700'}`}
     >
       Send Friend Request
     </button>

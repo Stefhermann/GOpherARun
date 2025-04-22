@@ -63,6 +63,9 @@ export default async function UserProfilePage({
   // Check if the button should be disabled
   const isRequestSent = request?.length > 0; // If request is found, don't show button again
 
+  console.log(request);
+  console.log(isRequestSent);
+
   return (
     <div className="min-h-screen bg-white text-gray-900 px-6 py-12 flex justify-center items-start">
       <div className="w-full max-w-2xl border border-gray-200 rounded-lg shadow-lg p-8">
@@ -85,7 +88,7 @@ export default async function UserProfilePage({
             // If no request has been sent yet, show the Send Friend Request Button
             <SendFriendRequestButton
               receiverId={profile.id}
-              isDisabled={isRequestSent} // Disable button if request is already sent
+              wasDisabled={isRequestSent} // Disable button if request is already sent
             />
           )}
         </div>
