@@ -17,7 +17,7 @@ export default async function UserProfilePage({
 
   const { data: user } = await supabase.auth.getUser();
 
-  console.log(user.user.id);
+  console.log("current user: ", user.user.id);
 
   // Get the profile row-data
   const { data: profile, error } = await supabase
@@ -37,13 +37,15 @@ export default async function UserProfilePage({
     .eq("user_initiator", user.user.id)
     .eq("user_friend", profile.id)
 
-  console.log(friendship);
+  console.log("friendship: ", friendship);
 
   const { data: request, error: requestError } = await supabase
   .from("friend_requests")
   .select("*")
   .eq("sender_id", user.user.id)     // the current logged-in user
   .eq("receiver_id", profile.id)   // the user whose profile you're viewing
+
+  console.log("request: ", request);
 
   // Get the events created by the user (assuming creator_id is the foreign key for the user)
   const { data: events, error: eventError } = await supabase
@@ -68,9 +70,9 @@ export default async function UserProfilePage({
             {profile.first_name} {profile.last_name}
           </p>
         </div>
-        {friendship ? (
+        {friendship?.length === 1 ? (
           <p>Friends</p>
-        ) : request ? (
+        ) : request?.length === 1 ? (
           <p>Pending...</p>
         ) : (
           <SendFriendRequestButton receiverId={profile.id} />
