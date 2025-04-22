@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { getFriendsList } from "@/app/friends/actions";
+import { RemoveFriendButton } from "./RemoveFriendButton";
 
 interface UserProfile {
   id: string;
@@ -52,8 +53,7 @@ export function FriendsList() {
                 </p>
                 <p className="text-sm text-gray-500">@{friend.username}</p>
               </div>
-              {/* Placeholder for actions or avatar */}
-              {/* <button className="text-sm text-blue-600 hover:underline">View</button> */}
+              <RemoveFriendButton friendId={friend.id} />
             </li>
           ))}
         </ul>
