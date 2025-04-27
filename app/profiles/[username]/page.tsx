@@ -1,8 +1,8 @@
 import { createClient } from "@/utils/supabase/server";
 import { notFound } from "next/navigation";
-import EventCard from "@/components/Events/event-card";
 import UserEventList from "@/components/Events/UserEventList";
 import { Event } from "@/types/custom";
+import { SendFriendRequestButton } from "@/components/Friends/SendFriendRequestButton";
 
 export default async function UserProfilePage({
   params,
@@ -14,6 +14,10 @@ export default async function UserProfilePage({
 
   // Create the supabase server client
   const supabase = await createClient();
+
+  const { data: user } = await supabase.auth.getUser();
+
+  console.log("current user: ", user.user.id);
 
   // Get the profile row-data
   const { data: profile, error } = await supabase
@@ -27,6 +31,24 @@ export default async function UserProfilePage({
     notFound();
   }
 
+  // Check friendship status (if they are friends)
+  const { data: friendship, error: friendshipError } = await supabase 
+    .from("friends")
+    .select("*")
+    .eq("user_initiator", user.user.id)
+    .eq("user_friend", profile.id);
+
+  console.log("friendship: ", friendship);
+
+  // Check if a friend request is already sent
+  const { data: request, error: requestError } = await supabase
+    .from("friend_requests")
+    .select("*")
+    .eq("sender_id", user.user.id)     // the current logged-in user
+    .eq("receiver_id", profile.id);    // the user whose profile you're viewing
+
+  console.log("request: ", request);
+
   // Get the events created by the user (assuming creator_id is the foreign key for the user)
   const { data: events, error: eventError } = await supabase
     .from("events")
@@ -38,16 +60,37 @@ export default async function UserProfilePage({
     console.error(eventError);
   }
 
+  // Check if the button should be disabled
+  const isRequestSent = request?.length > 0; // If request is found, don't show button again
+
+  console.log(request);
+  console.log(isRequestSent);
+
   return (
     <div className="min-h-screen bg-white text-gray-900 px-6 py-12 flex justify-center items-start">
       <div className="w-full max-w-2xl border border-gray-200 rounded-lg shadow-lg p-8">
-        <div className="mb-6 border-b border-gray-300 pb-4">
-          <h1 className="text-4xl font-bold text-[#7A0019]">
-            @{profile.username}
-          </h1>
-          <p className="text-xl font-medium text-[#7A0019]">
-            {profile.first_name} {profile.last_name}
-          </p>
+        <div className="mb-6 border-b border-gray-300 pb-4 flex justify-between items-center">
+          <div>
+            <h1 className="text-4xl font-bold text-[#7A0019]">
+              @{profile.username}
+            </h1>
+            <p className="text-xl font-medium text-[#7A0019]">
+              {profile.first_name} {profile.last_name}
+            </p>
+          </div>
+
+          {/* Handle button rendering logic based on friendship and request status */}
+          {friendship?.length === 1 ? (
+            <p>Friends</p> // If they're already friends, display "Friends"
+          ) : request?.length === 1 ? (
+            <p>Pending...</p> // If there's a pending request, display "Pending"
+          ) : (
+            // If no request has been sent yet, show the Send Friend Request Button
+            <SendFriendRequestButton
+              receiverId={profile.id}
+              wasDisabled={isRequestSent} // Disable button if request is already sent
+            />
+          )}
         </div>
 
         {profile.biography && (
@@ -78,3 +121,4 @@ export default async function UserProfilePage({
     </div>
   );
 }
+
